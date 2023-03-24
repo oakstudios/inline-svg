@@ -16,7 +16,7 @@ npm i @oakstudios/inline-svg
     
     ```html
     <!-- this automatically registers the component in the window as mechanical-ragger -->
-    <script src="https://unpkg.com/@oakstudios/inline-svg@latest/auto-register.js"></script>
+    <script type="module" src="https://unpkg.com/@oakstudios/inline-svg@latest/auto-register.js"></script>
     ```
     
     _OR_ importing the same auto-register function in JS:

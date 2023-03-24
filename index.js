@@ -7,7 +7,7 @@ let svgCache = {};
  *   This utility prevents fetch requests on the same page session
  *   (and especially those requested in close proximity)
  *   from pinging the server multiple times by storing
- *   a cache dictionary on the `window` object.
+ *   a cache dictionary in the module scope.
  *   Also runs response.text() before returning.
  */
 const fetchFromCache = (url) => {
