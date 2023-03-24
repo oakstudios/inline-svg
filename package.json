@@ -1,0 +1,23 @@
+{
+  "name": "@oakstudios/inline-svg",
+  "version": "0.1.0",
+  "description": "A web component for dynamically fetching SVG files and inlining them in HTML",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/oakstudios/inline-svg.git"
+  },
+  "keywords": [
+    "web-component"
+  ],
+  "author": "Oak Studios <info@oak.is> https://oak.is",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oakstudios/inline-svg/issues"
+  },
+  "homepage": "https://github.com/oakstudios/inline-svg#readme"
+}
