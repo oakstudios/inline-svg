@@ -48,5 +48,3 @@ export default class InlineSVG extends HTMLElement {
     });
   }
 }
-
-customElements.define("inline-svg", InlineSVG);
