@@ -32,7 +32,7 @@ export const scopeIDs = (data) => {
      * referring to https://www.w3.org/TR/wai-aria/#typemapping,
      * there are a few attributes that can contain an "ID reference list"
      */
-    const idReferenceAttributes = ["id", "aria-activedescendant", "aria-errormessage"]
+    const idReferenceAttributes = ["id", "aria-activedescendant", "aria-errormessage", "for"]
     idReferenceAttributes.forEach((attribute) => {
       const regex = new RegExp(`${attribute}=["']${id}["']`, "g")
       data = data.replaceAll(regex, `${attribute}="${newID}"`)
@@ -40,16 +40,13 @@ export const scopeIDs = (data) => {
     const idReferenceListAttributes = ["aria-controls", "aria-describedby", "aria-details", "aria-flowto", "aria-labeledby", "aria-owns"]
     idReferenceListAttributes.forEach((attribute) => {
       /**
-       * in id reference list (space-separated (\S+) blocks), only modify the current `id` and leave the rest of the id reference list alone.
-       * assume that the current `id` may appear anywhere in the space-separated list
+       * in id reference list (space-separated (\S+) blocks), only replace the current `id` with `newID` and leave the rest of the id reference list alone.
+       * assume that the current `id` may appear anywhere in the space-separated list of IDs.
        * example: `aria-describedby="xxxx yyyy"` becomes `aria-describedby="xxxx-234234 yyyy-234234"`
        */
-      const regex = new RegExp(`${attribute}=["'](\ *((${id})|(\S+))\ *)*["']`, "g")
+      const regex = new RegExp(`${attribute}=(?:'([^']*)'|"([^"]*)")`, "g")
       data = data.replaceAll(regex, (match) => {
-        return match
-          .split(" ")
-          .map((str) => (str === id ? `${newID}` : str))
-          .join(" ")
+        match.split(" ").map((singleID) => (singleID === id) ? newID : match)
       })
     })
 

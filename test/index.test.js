@@ -41,7 +41,7 @@ describe("scopes underscored IDs and references", () => {
   })
 })
 describe("scopes IDs and references with escaped quotes", () => {
-  const result = scopeIDs(template('escaped"quotes', '\"'))
+  const result = scopeIDs(template("escaped'quotes", '"'))
   it("replaces ID", () => {
     expect(result).not.toMatch(/id=[\"\']escaped\\"quotes[\'\"]/g)
   })
@@ -80,15 +80,24 @@ describe("replaces multiple IDs when referenced in `aria-*` arrays", () => {
       <desc id="yyyy">Lorem ipsum</desc>
     </svg>
   `)
-  console.log({source: `<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-describedby="xxxx yyyy">
-    <desc id="xxxx">Lorem ipsum</desc>
-    <desc id="yyyy">Lorem ipsum</desc>
-  </svg>`, result})
+  const resultSingleQuotes = scopeIDs(`
+    <svg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg' aria-describedby='xxxx yyyy'>
+      <desc id='xxxx'>Lorem ipsum</desc>
+      <desc id='yyyy'>Lorem ipsum</desc>
+    </svg>
+  `)
   it("replaces ID references", () => {
     expect(result).not.toMatch(/xxxx yyyy/g)
+  })
+  it("replaces ID references in single quotes", () => {
+    expect(resultSingleQuotes).not.toMatch(/xxxx yyyy/g)
   })
   it("replaces each individual ID", () => {
     expect(result).toMatch(/id=["'](xxxx\-\S+)["']/g)
     expect(result).toMatch(/id=["'](yyyy\-\S+)["']/g)
+  })
+  it("replaces each insdividual ID in single quotes", () => {
+    expect(resultSingleQuotes).toMatch(/id=["'](xxxx\-\S+)["']/g)
+    expect(resultSingleQuotes).toMatch(/id=["'](yyyy\-\S+)["']/g)
   })
 })
