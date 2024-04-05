@@ -13,7 +13,7 @@ export default class InlineSVG extends HTMLElement {
   }
   connectedCallback() {
     const scopedIDs =
-      this.attributes["scoped-ids"]?.value === "false" ? false : true
+      this.attributes["scoped"]?.value === "false" ? false : true
 
     this.setAttribute("data-loading", true)
 

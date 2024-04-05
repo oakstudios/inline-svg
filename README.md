@@ -39,5 +39,11 @@ npm i @oakstudios/inline-svg
    <inline-svg src="/path/to/file.svg"></inline-svg>
    ```
 
+## API
+| Attribute | Default | Description |
+| - | - | - |
+| `src` | `null` | HTTP path or URL to the desired SVG image |
+| `scoped` | `false` | Scopes `id` attributes and references to them within the SVG. Helps prevent naming collisions within the HTML document. |
+
 ## Acknowledgements
 https://www.npmjs.com/package/react-inlinesvg
