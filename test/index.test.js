@@ -12,10 +12,13 @@ const template = (id, quote = '"') => `
 </svg>
 `
 
+const uuidRegex = `[0-9a-fA-F]\{8}\\b-[0-9a-fA-F]\{4}\\b-[0-9a-fA-F]\{4}\\b-[0-9a-fA-F]\{4}\\b-[0-9a-fA-F]{12}`
+
 describe("scopes IDs and references when singlequotes are used", () => {
   const result = scopeIDs(template("id1", "'"))
   it("replaces ID", () => {
     expect(result).not.toMatch(/id=[\"\']id1[\'\"]/g)
+    expect(result).toMatch(new RegExp(`id=[\\"\\']id1\\-${uuidRegex}[\\"\\']`, "g"))
   })
   it("replaces ID reference", () => {
     expect(result).not.toMatch(/url\(#id1\)/g)
@@ -95,8 +98,27 @@ describe("replaces multiple IDs when referenced in `aria-*` arrays", () => {
     expect(result).toMatch(/id=["'](xxxx\-\S+)["']/g)
     expect(result).toMatch(/id=["'](yyyy\-\S+)["']/g)
   })
-  it("replaces each insdividual ID in single quotes", () => {
+  it("replaces each individual ID in single quotes", () => {
     expect(resultSingleQuotes).toMatch(/id=["'](xxxx\-\S+)["']/g)
     expect(resultSingleQuotes).toMatch(/id=["'](yyyy\-\S+)["']/g)
+  })
+})
+describe("works with urls in CSS style tags", () => {
+  const result = scopeIDs(`
+    <svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        rect { mask: url(#mask0); }
+      </style>
+      <g>
+        <rect width="128" height="128" fill="red"/>
+      </g>
+      <mask id="mask0">
+        <circle cx="128" r="128" fill="white"/>
+      </mask>
+    </svg>
+  `)
+  it("replaces url with uuid", () => {
+    expect(result).not.toMatch(/mask: url\(#mask0\);/g)
+    expect(result).toMatch(new RegExp(`mask: url\\(#mask0\\-${uuidRegex}\\);`, "g"))
   })
 })
