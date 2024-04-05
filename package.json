@@ -1,6 +1,6 @@
 {
   "name": "@oakstudios/inline-svg",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "A web component for dynamically fetching SVG files and inlining them in HTML",
   "main": "index.js",
   "type": "module",
