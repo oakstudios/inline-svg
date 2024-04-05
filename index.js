@@ -1,4 +1,4 @@
-import { fetchFromCache, uniquifyIDs } from './utils.js';
+import { fetchFromCache, scopeIDs } from "./utils.js"
 
 /**
  * @name InlineSVG
@@ -9,14 +9,26 @@ import { fetchFromCache, uniquifyIDs } from './utils.js';
  */
 export default class InlineSVG extends HTMLElement {
   constructor() {
-    super();
+    super()
   }
   connectedCallback() {
+    const scopedIDs =
+      this.attributes["scoped-ids"]?.value === "false" ? false : true
+
+    this.setAttribute("data-loading", true)
+
     fetchFromCache(this.attributes.src.value).then((data) => {
-      data = this.uniquifyIDs(data);
+      // store this in case we need to re-render with different options
+      this.rawData = data
+
+      if (scopedIDs) {
+        data = scopeIDs(data)
+      }
 
       // add svg to HTML
-      this.innerHTML = data;
-    });
+      this.innerHTML = data
+
+      this.setAttribute("data-loading", false)
+    })
   }
 }

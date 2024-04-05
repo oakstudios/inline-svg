@@ -1,4 +1,4 @@
-let svgCache = {};
+let svgCache = {}
 
 /**
  * @name fetchFromCache
@@ -12,22 +12,49 @@ let svgCache = {};
  */
 export const fetchFromCache = (url) => {
   if (!svgCache[url]) {
-    svgCache[url] = fetch(url).then((data) => data.text());
+    svgCache[url] = fetch(url).then((data) => data.text())
   }
 
-  return svgCache[url];
-};
+  return svgCache[url]
+}
 
-export const uniquifyIDs = (data) => {
-  // match IDs and convert to array
-  const IDs = [...data.matchAll(/id=["']([a-zA-Z0-9_]*)["']/gi)].map(
-    (match) => match[1]
-  );
-  // replace each id and its references
+export const scopeIDs = (data) => {
+  /** match IDs and convert to array */
+  const regex = /id=["'](\S+)["']/gi
+  const IDs = [...data.matchAll(regex)].map((match) => match[1])
+
+  /** replace each id and its references */
   IDs.forEach((id) => {
-    // add a fancy lil random alphanumeric string to the end of the id
-    const newID = `${id}-${Math.random().toString(36).slice(2)}`;
-    // this replaces the id *and* its references, regardless of where they appear
-    data = data.replaceAll(id, newID);
-  });
+    /** add a uuid to the id */
+    const newID = `${id}-${crypto.randomUUID()}`
+
+    /**
+     * referring to https://www.w3.org/TR/wai-aria/#typemapping,
+     * there are a few attributes that can contain an "ID reference list"
+     */
+    const idReferenceAttributes = ["id", "aria-activedescendant", "aria-errormessage"]
+    idReferenceAttributes.forEach((attribute) => {
+      const regex = new RegExp(`${attribute}=["']${id}["']`, "g")
+      data = data.replaceAll(regex, `${attribute}="${newID}"`)
+    })
+    const idReferenceListAttributes = ["aria-controls", "aria-describedby", "aria-details", "aria-flowto", "aria-labeledby", "aria-owns"]
+    idReferenceListAttributes.forEach((attribute) => {
+      /**
+       * in id reference list (space-separated (\S+) blocks), only modify the current `id` and leave the rest of the id reference list alone.
+       * assume that the current `id` may appear anywhere in the space-separated list
+       * example: `aria-describedby="xxxx yyyy"` becomes `aria-describedby="xxxx-234234 yyyy-234234"`
+       */
+      const regex = new RegExp(`${attribute}=["'](\ *((${id})|(\S+))\ *)*["']`, "g")
+      data = data.replaceAll(regex, (match) => {
+        return match
+          .split(" ")
+          .map((str) => (str === id ? `${newID}` : str))
+          .join(" ")
+      })
+    })
+
+    /** replace url-based ID references */
+    data = data.replaceAll(`url(#${id})`, `url(#${newID})`)
+  })
+  return data
 }

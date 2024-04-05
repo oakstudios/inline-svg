@@ -29,8 +29,11 @@
   },
   "homepage": "https://github.com/oakstudios/inline-svg#readme",
   "devDependencies": {
+    "@vitest/browser": "^0.29.8",
     "@vitest/ui": "^0.29.8",
+    "jsdom": "^21.1.1",
     "vite": "^4.2.1",
-    "vitest": "^0.29.8"
+    "vitest": "^0.29.8",
+    "webdriverio": "^8.6.9"
   }
 }
