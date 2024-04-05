@@ -1,4 +1,3 @@
-// @vitest-environment jsdom
 import { assert, expect, test, it, describe } from "vitest"
 import { scopeIDs } from "../utils.js"
 
